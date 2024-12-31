@@ -1,0 +1,403 @@
+mysql> create database meal;
+Query OK, 1 row affected (0.01 sec)
+
+ show databases;
++--------------------+
+| Database           |
++--------------------+
+| bank               |
+| bank1              |
+| bankdata           |
+| college            |
+| emp                |
+| employee           |
+| employee1          |
+| employee2          |
+| employee3          |
+| employeee11        |
+| grand              |
+| hdfcbank           |
+| hola               |
+| hospital           |
+| hospital337        |
+| information_schema |
+| insurance          |
+| insurance1         |
+| malll              |
+| malllls            |
+| meal               |
+| mysql              |
+| newdatabase        |
+| performance_schema |
+| sakila             |
+| supp               |
+| sys                |
+| world              |
++--------------------+
+28 rows in set (0.00 sec)
+
+mysql> use meal;
+Database changed
+
+mysql> CREATE TABLE Customer (
+    ->
+    ->     CustomerID INT PRIMARY KEY,
+    ->
+    ->     Name VARCHAR(50),
+    ->
+    ->     PhoneNumber VARCHAR(15),
+    ->
+    ->     DeliveryAddress VARCHAR(100)
+    ->
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Driver (
+    ->
+    ->     DriverID INT PRIMARY KEY,
+    ->
+    ->     Name VARCHAR(50),
+    ->
+    ->     PhoneNumber VARCHAR(15),
+    ->
+    ->     AvailabilityStatus VARCHAR(20)
+    ->
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE OrderTable (
+    ->
+    ->     OrderID INT PRIMARY KEY,
+    ->
+    ->     CustomerID INT,
+    ->
+    ->     DriverID INT,
+    ->
+    ->     OrderTime DATETIME,
+    ->
+    ->     TotalPrice DECIMAL(10, 2),
+    ->
+    ->     DeliveryStatus VARCHAR(20),
+    ->
+    ->     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    ->
+    ->     FOREIGN KEY (DriverID) REFERENCES Driver(DriverID)
+    ->
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Meal (
+    ->
+    ->     MealID INT PRIMARY KEY,
+    ->
+    ->     MealName VARCHAR(50),
+    ->
+    ->     Price DECIMAL(10, 2),
+    ->
+    ->     RestaurantID INT
+    ->
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Restaurant (
+    ->
+    ->     RestaurantID INT PRIMARY KEY,
+    ->
+    ->     Name VARCHAR(50),
+    ->
+    ->     Location VARCHAR(50),
+    ->
+    ->     PhoneNumber VARCHAR(15)
+    ->
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE OrderMeal (
+    ->
+    ->     OrderID INT,
+    ->
+    ->     MealID INT,
+    ->
+    ->     Quantity INT,
+    ->
+    ->     PRIMARY KEY (OrderID, MealID),
+    ->
+    ->     FOREIGN KEY (OrderID) REFERENCES OrderTable(OrderID),
+    ->
+    ->     FOREIGN KEY (MealID) REFERENCES Meal(MealID)
+    ->
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE MealRating (
+    ->
+    ->     RatingID INT PRIMARY KEY,
+    ->
+    ->     MealID INT,
+    ->
+    ->     CustomerID INT,
+    ->
+    ->     RatingScore INT,
+    ->
+    ->     RatingRemarks VARCHAR(255),
+    ->
+    ->     FOREIGN KEY (MealID) REFERENCES Meal(MealID),
+    ->
+    ->     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+    ->
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO Customer (CustomerID, Name, PhoneNumber, DeliveryAddress) VALUES
+    ->
+    -> (101, 'Alice Smith', '555-1234', '123 Elm St, City A'),
+    ->
+    -> (102, 'Bob Johnson', '555-5678', '456 Oak St, City B'),
+    ->
+    -> (103, 'Charlie Lee', '555-8765', '789 Pine St, City C'),
+    ->
+    -> (104, 'Diana Brown', '555-4321', '321 Maple St, City D'),
+    ->
+    -> (105, 'Emma White', '555-1122', '654 Birch St, City E');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from customer;
++------------+-------------+-------------+----------------------+
+| CustomerID | Name        | PhoneNumber | DeliveryAddress      |
++------------+-------------+-------------+----------------------+
+|        101 | Alice Smith | 555-1234    | 123 Elm St, City A   |
+|        102 | Bob Johnson | 555-5678    | 456 Oak St, City B   |
+|        103 | Charlie Lee | 555-8765    | 789 Pine St, City C  |
+|        104 | Diana Brown | 555-4321    | 321 Maple St, City D |
+|        105 | Emma White  | 555-1122    | 654 Birch St, City E |
++------------+-------------+-------------+----------------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Driver (DriverID, Name, PhoneNumber, AvailabilityStatus) VALUES
+    ->
+    -> (201, 'Mike Green', '555-2134', 'Available'),
+    ->
+    -> (202, 'Sara Lee', '555-3245', 'Not Available'),
+    ->
+    -> (203, 'John Black', '555-4356', 'Available'),
+    ->
+    -> (204, 'Lily White', '555-5467', 'Available'),
+    ->
+    -> (205, 'James Brown', '555-6578', 'Not Available');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> select * from driver;
++----------+-------------+-------------+--------------------+
+| DriverID | Name        | PhoneNumber | AvailabilityStatus |
++----------+-------------+-------------+--------------------+
+|      201 | Mike Green  | 555-2134    | Available          |
+|      202 | Sara Lee    | 555-3245    | Not Available      |
+|      203 | John Black  | 555-4356    | Available          |
+|      204 | Lily White  | 555-5467    | Available          |
+|      205 | James Brown | 555-6578    | Not Available      |
++----------+-------------+-------------+--------------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO OrderTable (OrderID, CustomerID, DriverID, OrderTime, TotalPrice, DeliveryStatus) VALUES
+    ->
+    -> (232, 101, 201, '2024-12-30 10:00:00', 30.00, 'Delivered'),
+    ->
+    -> (2, 102, 202, '2024-12-30 11:00:00', 40.00, 'Delivered'),
+    ->
+    -> (3, 103, 203, '2024-12-30 12:00:00', 25.00, 'In Progress'),
+    ->
+    -> (4, 104, 204, '2024-12-30 13:00:00', 50.00, 'Delivered'),
+    ->
+    -> (5, 105, 205, '2024-12-30 14:00:00', 35.00, 'Pending');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from ordertable;
++---------+------------+----------+---------------------+------------+----------------+
+| OrderID | CustomerID | DriverID | OrderTime           | TotalPrice | DeliveryStatus |
++---------+------------+----------+---------------------+------------+----------------+
+|       2 |        102 |      202 | 2024-12-30 11:00:00 |      40.00 | Delivered      |
+|       3 |        103 |      203 | 2024-12-30 12:00:00 |      25.00 | In Progress    |
+|       4 |        104 |      204 | 2024-12-30 13:00:00 |      50.00 | Delivered      |
+|       5 |        105 |      205 | 2024-12-30 14:00:00 |      35.00 | Pending        |
+|     232 |        101 |      201 | 2024-12-30 10:00:00 |      30.00 | Delivered      |
++---------+------------+----------+---------------------+------------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Meal (MealID, MealName, Price, RestaurantID) VALUES
+    ->
+    -> (301, 'Fried rice', 12.00, 1),
+    ->
+    -> (302, 'Veggie Burger', 8.00, 2),
+    ->
+    -> (303, 'Chicken Biryani', 15.00, 3),
+    ->
+    -> (304, 'Paneer Tikka', 10.00, 4),
+    ->
+    -> (305, 'Caesar Salad', 7.00, 5);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from meal;
++--------+-----------------+-------+--------------+
+| MealID | MealName        | Price | RestaurantID |
++--------+-----------------+-------+--------------+
+|    301 | Fried rice      | 12.00 |            1 |
+|    302 | Veggie Burger   |  8.00 |            2 |
+|    303 | Chicken Biryani | 15.00 |            3 |
+|    304 | Paneer Tikka    | 10.00 |            4 |
+|    305 | Caesar Salad    |  7.00 |            5 |
++--------+-----------------+-------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO Restaurant (RestaurantID, Name, Location, PhoneNumber) VALUES
+    ->
+    -> (1, 'Pizza Palace', 'City A', '555-7890'),
+    ->
+    -> (2, 'Burger Barn', 'City B', '555-2345'),
+    ->
+    -> (3, 'Biryani House', 'City C', '555-6789'),
+    ->
+    -> (4, 'Indian Spice', 'City D', '555-1234'),
+    ->
+    -> (5, 'Green Garden', 'City E', '555-5678');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Restaurant;
++--------------+---------------+----------+-------------+
+| RestaurantID | Name          | Location | PhoneNumber |
++--------------+---------------+----------+-------------+
+|            1 | Pizza Palace  | City A   | 555-7890    |
+|            2 | Burger Barn   | City B   | 555-2345    |
+|            3 | Biryani House | City C   | 555-6789    |
+|            4 | Indian Spice  | City D   | 555-1234    |
+|            5 | Green Garden  | City E   | 555-5678    |
++--------------+---------------+----------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO OrderMeal (OrderID, MealID, Quantity) VALUES
+    ->
+    -> (232, 301, 2),
+    ->
+    -> (232, 302, 1),
+    ->
+    -> (2, 303, 1),
+    ->
+    -> (2, 304, 2),
+    ->
+    -> (3, 305, 3);
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from ordermeal;
++---------+--------+----------+
+| OrderID | MealID | Quantity |
++---------+--------+----------+
+|       2 |    303 |        1 |
+|       2 |    304 |        2 |
+|       3 |    305 |        3 |
+|     232 |    301 |        2 |
+|     232 |    302 |        1 |
++---------+--------+----------+
+5 rows in set (0.00 sec)
+
+
+mysql> INSERT INTO MealRating (RatingID, MealID, CustomerID, RatingScore, RatingRemarks) VALUES
+    ->
+    -> (1, 301, 101, 1, 'Good, but could be hotter.'),
+    ->
+    -> (2, 302, 102, 1, 'Delicious! Will order again.'),
+    ->
+    -> (3, 303, 103, 3, 'The taste was average.'),
+    ->
+    -> (4, 304, 104, 5, 'Perfect, very flavorful.'),
+    ->
+    -> (5, 305, 105, 4, 'Fresh and light, great salad.');
+Query OK, 5 rows affected (0.00 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from mealrating;
++----------+--------+------------+-------------+-------------------------------+
+| RatingID | MealID | CustomerID | RatingScore | RatingRemarks                 |
++----------+--------+------------+-------------+-------------------------------+
+|        1 |    301 |        101 |           1 | Good, but could be hotter.    |
+|        2 |    302 |        102 |           1 | Delicious! Will order again.  |
+|        3 |    303 |        103 |           3 | The taste was average.        |
+|        4 |    304 |        104 |           5 | Perfect, very flavorful.      |
+|        5 |    305 |        105 |           4 | Fresh and light, great salad. |
++----------+--------+------------+-------------+-------------------------------+
+5 rows in set (0.00 sec)
+
+Q1. DETERMINE THE DRIVER NAME , CUSTOMER NAME AND COST OF SPECIFIC ORDER (EG., 232)
+SOLUTION:
+mysql> SELECT
+    ->     d.Name AS DriverName,
+    ->     c.Name AS CustomerName,
+    ->     o.TotalPrice AS OrderCost
+    -> FROM
+    ->     OrderTable o
+    -> JOIN
+    ->     Driver d ON o.DriverID = d.DriverID
+    -> JOIN
+    ->     Customer c ON o.CustomerID = c.CustomerID
+    -> WHERE
+    ->     o.OrderID = 232;
++------------+--------------+-----------+
+| DriverName | CustomerName | OrderCost |
++------------+--------------+-----------+
+| Mike Green | Alice Smith  |     30.00 |
++------------+--------------+-----------+
+1 row in set (0.00 sec)
+
+Q2. UPDATE THE MEAL DESCRIPTION OF 'FRIED RICE' TO 'BIRYANI'
+SOLUTION:
+mysql> update meal
+    -> set mealname = 'BIRYANI'
+    -> where mealname = 'Fried rice';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from meal;
++--------+-----------------+-------+--------------+
+| MealID | MealName        | Price | RestaurantID |
++--------+-----------------+-------+--------------+
+|    301 | BIRYANI         | 12.00 |            1 |
+|    302 | Veggie Burger   |  8.00 |            2 |
+|    303 | Chicken Biryani | 15.00 |            3 |
+|    304 | Paneer Tikka    | 10.00 |            4 |
+|    305 | Caesar Salad    |  7.00 |            5 |
++--------+-----------------+-------+--------------+
+5 rows in set (0.00 sec)
+
+
+Q3. DELETE THE MEAL HAVING A RATING SCORE LESS THAN 2
+SOLUTION:
+mysql> -- Step 1: Use a temporary table to store MealIDs with avg rating < 2
+mysql> CREATE TEMPORARY TABLE TempMealIDs AS
+    -> SELECT MealID
+    -> FROM MealRating
+    -> GROUP BY MealID
+    -> HAVING AVG(RatingScore) < 2;
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Step 2: Delete from MealRating based on TempMealIDs
+mysql> DELETE FROM MealRating
+    -> WHERE MealID IN (SELECT MealID FROM TempMealIDs);
+Query OK, 2 rows affected (0.00 sec)
+
+mysql> SELECT * FROM MEALRATING
+    -> ;
++----------+--------+------------+-------------+-------------------------------+
+| RatingID | MealID | CustomerID | RatingScore | RatingRemarks                 |
++----------+--------+------------+-------------+-------------------------------+
+|        3 |    303 |        103 |           3 | The taste was average.        |
+|        4 |    304 |        104 |           5 | Perfect, very flavorful.      |
+|        5 |    305 |        105 |           4 | Fresh and light, great salad. |
++----------+--------+------------+-------------+-------------------------------+
+3 rows in set (0.00 sec)
